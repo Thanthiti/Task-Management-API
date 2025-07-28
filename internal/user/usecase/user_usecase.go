@@ -3,7 +3,7 @@ package usecase
 import (
 	model "mymodule/internal/user/models"
 	"mymodule/pkg/logger"
-
+	"mymodule/pkg/auth"
 )
 
 type UserRepository interface {
@@ -24,12 +24,14 @@ type UserUsecase interface {
 type UserusecaseImpl struct{
 	repo UserRepository
 	cypto CryptoService
+	token auth.TokenService
 }
 
-func NewUserUsecase(repo UserRepository, cypto CryptoService) UserUsecase{
+func NewUserUsecase(repo UserRepository, cypto CryptoService,token auth.TokenService) UserUsecase{
 	return  &UserusecaseImpl{
 		repo:repo,
 		cypto: cypto,
+		token: token,
 	}
 }
 
@@ -40,7 +42,10 @@ func (uc *UserusecaseImpl) CreateUser(user model.User) error{
 		return  err
 	}
 	user.Password = string(hashPassword)
-
+	if err := uc.repo.Save(user) ;err != nil {
+		logger.Log.Warn()
+		return  err
+	}
 	return  nil
 }
 

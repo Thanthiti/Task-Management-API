@@ -12,6 +12,10 @@ var Log *logrus.Logger
 
 func InitLogger() {
 	Log = logrus.New()
+	// Set log level
+	Log.SetReportCaller(true)
+	// Show which file did the log come from
+	Log.SetLevel(logrus.InfoLevel)
 
 	if _, err := os.Stat("logs"); os.IsNotExist(err) {
 		// 0755 = owner can edit other can read
@@ -36,10 +40,7 @@ func InitLogger() {
 		TimestampFormat: time.RFC3339,
 		ForceColors:     true,
 	})
-	// Set log level
-	Log.SetLevel(logrus.InfoLevel)
-	// Show which file did the log come from
-	Log.SetReportCaller(true)
+
 }
 
 func Info(args ...any) {
@@ -48,6 +49,10 @@ func Info(args ...any) {
 
 func Debug(args ...any) {
 	Log.Debug(args...)
+}
+
+func Warn(args ...any) {
+	Log.Warn(args...)
 }
 
 func Error(args ...any) {
