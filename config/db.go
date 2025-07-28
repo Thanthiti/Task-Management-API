@@ -6,7 +6,17 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
+func InitDB() *gorm.DB{
+	dsn := ConnectDB()
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("Failed to connect DB: %v",err)
+	}
+	return db
+}
 
 func ConnectDB() string{
 	err := godotenv.Load()

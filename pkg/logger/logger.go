@@ -41,3 +41,15 @@ func InitLogger() {
 	// Show which file did the log come from
 	Log.SetReportCaller(true)
 }
+
+func Info(args ...any) {
+	Log.Info(args...)
+}
+
+func Debug(args ...any) {
+	Log.Debug(args...)
+}
+
+func Error(args ...any) {
+	Log.Error(args...)
+}
