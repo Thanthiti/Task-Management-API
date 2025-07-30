@@ -43,18 +43,3 @@ func InitLogger() {
 
 }
 
-func Info(args ...any) {
-	Log.Info(args...)
-}
-
-func Debug(args ...any) {
-	Log.Debug(args...)
-}
-
-func Warn(args ...any) {
-	Log.Warn(args...)
-}
-
-func Error(args ...any) {
-	Log.Error(args...)
-}

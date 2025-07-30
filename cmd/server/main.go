@@ -6,7 +6,7 @@ import (
 	"time"
 
 	// "mymodule/config"
-	model "mymodule/internal/user/models"
+	"mymodule/internal/user/model"
 	"mymodule/internal/user/repository"
 	"mymodule/internal/user/usecase"
 	"mymodule/pkg/auth"
@@ -32,11 +32,11 @@ func main() {
 
 	db,err := gorm.Open(sqlite.Open("user.db"), &gorm.Config{})
 	if err != nil {
-		logger.Error("Failed to connect database : ",err)
+		logger.Log.Error("Failed to connect database : ",err)
 	}
 	
 	if err := db.AutoMigrate(&model.User{});err != nil {
-		logger.Error("Failed to connect database : ",err)
+		logger.Log.Error("Failed to connect database : ",err)
 	}
 
 	
@@ -50,12 +50,12 @@ func main() {
 	
 	TestData := model.User{
 		Name: "Golang",
-		Email: "a@gmail.com",
+		Email: "b@gmil.com",
 		Password: "Test1234",
 	}
 	
 	result  := userHandler.CreateUser(TestData)
-	logger.Debug(result)	
+	logger.Log.Debug(result)	
 	
 
 }

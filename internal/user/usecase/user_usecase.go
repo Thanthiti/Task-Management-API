@@ -1,9 +1,10 @@
 package usecase
 
 import (
-	model "mymodule/internal/user/models"
-	"mymodule/pkg/logger"
+	"fmt"
+	"mymodule/internal/user/model"
 	"mymodule/pkg/auth"
+	"mymodule/pkg/logger"
 )
 
 type UserRepository interface {
@@ -36,16 +37,28 @@ func NewUserUsecase(repo UserRepository, cypto CryptoService,token auth.TokenSer
 }
 
 func (uc *UserusecaseImpl) CreateUser(user model.User) error{
+	// Check email already exits 
+	exitUser ,err := uc.repo.FindByEmail(user.Email)
+	if err != nil && exitUser != nil{
+		logger.Log.Warn("Email already exits : ", user.Email)
+		return  fmt.Errorf("email already registed")
+	}
+	
+	// Hash password  
 	hashPassword ,err:= uc.cypto.HashedPassword(user.Password)
 	if err != nil {
-		logger.Error("Failed to hash password:",err)
+		logger.Log.Error("Hash Failed :",err)
 		return  err
 	}
 	user.Password = string(hashPassword)
+	
+	// Save to DB 
 	if err := uc.repo.Save(user) ;err != nil {
 		logger.Log.Warn()
 		return  err
 	}
+
+	logger.Log.Info("User created : ", user.Email)
 	return  nil
 }
 

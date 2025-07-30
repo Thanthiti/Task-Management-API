@@ -32,7 +32,7 @@ func AuthMiddleware(jwtManager auth.TokenService) fiber.Handler {
 		tokenStr := parts[1]
 		token, err := jwtManager.VerifyToken(tokenStr)
 		if err != nil || !token.Valid {
-			logger.Warn("Invalid token: ", err)
+			logger.Log.Warn("Invalid token: ", err)
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "unauthorized",
 			})
@@ -40,14 +40,14 @@ func AuthMiddleware(jwtManager auth.TokenService) fiber.Handler {
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			logger.Error("Cannot parse JWT claims")
+			logger.Log.Error("Cannot parse JWT claims")
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "unauthorized",
 			})
 		}
 
 		userID := uint(claims["userID"].(float64))
-		logger.Info("Authorized user ID: ", userID)
+		logger.Log.Info("Authorized user ID: ", userID)
 
 		// แนบ userID ไว้ใน context
 		c.Locals("userID", userID)
