@@ -16,7 +16,7 @@ type UserRepository interface {
 }
 
 type UserUsecase interface {
-	CreateUser(user model.User) error
+	Register(user model.User) error
 	Login(email, password string) (string , error)
 	UpdateUser(user model.User) error
 	DeleteUser(userID uint) error
@@ -36,7 +36,7 @@ func NewUserUsecase(repo UserRepository, cypto CryptoService,token auth.TokenSer
 	}
 }
 
-func (uc *UserusecaseImpl) CreateUser(user model.User) error{
+func (uc *UserusecaseImpl) Register(user model.User) error{
 	// Check email already exits 
 	exitUser ,err := uc.repo.FindByEmail(user.Email)
 	if err != nil && exitUser != nil{

@@ -6,12 +6,15 @@ import (
 	"time"
 
 	// "mymodule/config"
+	"mymodule/internal/user/handler"
 	"mymodule/internal/user/model"
 	"mymodule/internal/user/repository"
 	"mymodule/internal/user/usecase"
 	"mymodule/pkg/auth"
 	"mymodule/pkg/logger"
+	"mymodule/pkg/validator"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -26,6 +29,7 @@ func main() {
 	}
 
 	logger.InitLogger()
+	app := fiber.New()
 	
 	// Postgres
 	// db := config.InitDB()
@@ -44,18 +48,22 @@ func main() {
 
 	jwtManager := auth.NewJwtManager(jwtKey,time.Hour*2)
 	cyptoService := &usecase.DefaultCryptoService{}
+	validator := validator.InitValidator()
 	
 	userRepo := repository.NewGormUserRepository(db)
-	userHandler := usecase.NewUserUsecase(userRepo,cyptoService,jwtManager)
+	useUsecase := usecase.NewUserUsecase(userRepo,cyptoService,jwtManager)
+	handler.NewUserHandler(app,useUsecase,jwtManager,validator)
 	
-	TestData := model.User{
-		Name: "Golang",
-		Email: "b@gmil.com",
-		Password: "Test1234",
-	}
+	// TestData := model.User{
+	// 	Name: "Golang",
+	// 	Email: "b@gmil.com",
+	// 	Password: "Test1234",
+	// }
 	
-	result  := userHandler.CreateUser(TestData)
-	logger.Log.Debug(result)	
+	// result  := userHandler.CreateUser(TestData)
+	// logger.Log.Debug(result)	
+
+	app.Listen(":8080")
 	
 
 }

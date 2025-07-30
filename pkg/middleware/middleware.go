@@ -1,4 +1,3 @@
-// pkg/auth/middleware.go
 package auth
 
 import (
@@ -11,7 +10,7 @@ import (
 	
 )
 
-func AuthMiddleware(jwtManager auth.TokenService) fiber.Handler {
+func Middleware(jwtManager auth.TokenService) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		authHeader := c.Get("Authorization")
 		if authHeader == "" {
@@ -49,7 +48,6 @@ func AuthMiddleware(jwtManager auth.TokenService) fiber.Handler {
 		userID := uint(claims["userID"].(float64))
 		logger.Log.Info("Authorized user ID: ", userID)
 
-		// แนบ userID ไว้ใน context
 		c.Locals("userID", userID)
 
 		return c.Next()
