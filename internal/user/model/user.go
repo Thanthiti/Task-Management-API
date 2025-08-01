@@ -33,5 +33,12 @@ type UserResponse struct {
 	Email string `json:"email" example:"john@example.com"`
 }
 
+// Update model 
+type UpdateUserRequest struct {
+	ID    uint   `json:"id" example:"1"`
+	Name  string `json:"name,omitempty"`  
+	Email string `json:"email,omitempty"`
+}
+
 
 

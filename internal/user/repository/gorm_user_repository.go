@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+	"fmt"
 	"mymodule/internal/user/model"
 	"mymodule/internal/user/usecase"
 	"mymodule/pkg/logger"
@@ -33,27 +35,44 @@ func (r *GormUserRepository) Save(user model.User) error {
 func (r *GormUserRepository) FindByEmail(email string) (*model.User, error) {
 	var user model.User
 	result := r.db.Where("email = ?", email).First(&user)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil 
+	}
+	
 	if result.Error != nil {
+		fmt.Println("7")
 		logger.Log.WithFields(map[string]interface{}{
 			"email": email,
-		}).Error("Failed to find user by email")
-		return nil, result.Error
-	}
-	logger.Log.WithFields(map[string]interface{}{
-		"email": email,
-	}).Info("User found by email")
+			"error": result.Error,
+			}).Error("Database error finding user by email")
+			return nil, result.Error
+		}
+		
+	fmt.Println("8")
+	logger.Log.WithFields(map[string]interface{}{"email": email}).Info("User found by email")
 	return &user, nil
 }
+
 
 func (r *GormUserRepository) FindByID(userID uint) (*model.User, error) {
 	var user model.User
 	result := r.db.First(&user, userID)
+
 	if result.Error != nil {
-		logger.Log.WithFields(map[string]interface{}{
-			"userID": userID,
-		}).Error("Failed to find user by ID")
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			logger.Log.WithFields(map[string]interface{}{
+				"userID": userID,
+			}).Info("User not found by ID")
+		} else {
+			logger.Log.WithFields(map[string]interface{}{
+				"userID": userID,
+				"error": result.Error,
+			}).Error("Database error finding user by ID")
+		}
 		return nil, result.Error
 	}
+
 	logger.Log.WithFields(map[string]interface{}{
 		"userID": userID,
 	}).Info("User found by ID")

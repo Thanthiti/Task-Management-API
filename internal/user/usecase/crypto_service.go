@@ -14,6 +14,6 @@ type DefaultCryptoService struct{}
 func (d *DefaultCryptoService) HashedPassword(password string) (string, error) {
 	return cypto.HashedPassword(password)
 }
-func (d *DefaultCryptoService) ComparePassword(password, hash string) bool {
-	return cypto.ComparePassword(password,hash)
-}
+func (d *DefaultCryptoService) ComparePassword(hash,password string) bool {
+	return cypto.ComparePassword(hash,password)
+}	

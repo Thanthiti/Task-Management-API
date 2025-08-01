@@ -16,3 +16,4 @@ func ToUserResponse(u User) UserResponse {
 		Email: u.Email,
 	}
 }
+

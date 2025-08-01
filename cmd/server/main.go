@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -11,36 +10,44 @@ import (
 	"mymodule/internal/user/repository"
 	"mymodule/internal/user/usecase"
 	"mymodule/pkg/auth"
-	"mymodule/pkg/logger"
+	loger "mymodule/pkg/logger"
 	"mymodule/pkg/validator"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func main() {
-	fmt.Println("Hello world")
+	loger.InitLogger()
 	
 	err := godotenv.Load()
 	if err != nil {
-		logger.Log.Fatal("Error loading .env file")
+		loger.Log.Fatal("Error loading .env file")
 	}
 
-	logger.InitLogger()
 	app := fiber.New()
+	app.Use(cors.New(cors.Config{
+	// AllowOrigins:     "https://your-frontend.com", //  Domain frontend
+	AllowCredentials: false,                         
+	AllowHeaders:     "Content-Type",
+}))
 	
-	// Postgres
+	// Postgres	
 	// db := config.InitDB()
 
-	db,err := gorm.Open(sqlite.Open("user.db"), &gorm.Config{})
+	db,err := gorm.Open(sqlite.Open("user.db"), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
-		logger.Log.Error("Failed to connect database : ",err)
+		loger.Log.Error("Failed to connect database : ",err)
 	}
 	
 	if err := db.AutoMigrate(&model.User{});err != nil {
-		logger.Log.Error("Failed to connect database : ",err)
+		loger.Log.Error("Failed to connect database : ",err)
 	}
 
 	
