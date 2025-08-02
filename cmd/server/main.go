@@ -16,7 +16,7 @@ import (
 	userUsecase "mymodule/internal/user/usecase"
 
 	// Task module
-	// taskHandler "mymodule/internal/task/handler"
+	taskHandler "mymodule/internal/task/handler"
 	taskModel "mymodule/internal/task/model"
 	taskRepo "mymodule/internal/task/repository"
 	taskUsecase "mymodule/internal/task/usecase"
@@ -73,8 +73,7 @@ func main() {
 	// === Setup Task Module ===
 	taskRepo := taskRepo.NewGormTaskRepository(db)
 	taskUsecase := taskUsecase.NewtaskUsecase(taskRepo)
-	loger.Log.Debug(taskUsecase)
-
+	taskHandler.NewUserHandler(app,taskUsecase,validator)
 	// app.Listen(":8080")
 
 }

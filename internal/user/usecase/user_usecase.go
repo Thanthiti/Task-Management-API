@@ -110,27 +110,22 @@ func (uc *UserusecaseImpl) UpdateUser(user model.User) error {
 	exitUser, err := uc.repo.FindByID(user.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			fmt.Println("1")
 			logger.Log.Warn("Update failed: user not found")
 			return fmt.Errorf("user not found")
 		}
-		fmt.Println("2")
 		logger.Log.Error("DB error when finding user by ID: ", err)
 		return err
 	}
 	if exitUser == nil {
-		fmt.Println("3")
 		logger.Log.Warn("Update failed: user is nil")
 		return fmt.Errorf("user not found")
 	}
 	userWithEmail, err := uc.repo.FindByEmail(user.Email)
 	if err != nil {
-		fmt.Println("4")
 		logger.Log.Error("DB error when checking email uniqueness: ", err)
 		return err
 	}
 	if userWithEmail != nil && userWithEmail.ID != user.ID {
-		fmt.Println("5")
 		logger.Log.Warn("Update failed: email already registered", user.Email)
 		return fmt.Errorf("email already registered")
 	}
