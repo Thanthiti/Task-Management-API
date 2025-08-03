@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"mymodule/internal/user/model"
 	"mymodule/internal/user/usecase"
-	auths "mymodule/pkg/auth"
+	"mymodule/pkg/auth"
 	"mymodule/pkg/logger"
 	"mymodule/pkg/middleware"
 
@@ -14,11 +14,11 @@ import (
 
 type HttpUserhandler struct {
 	usecase usecase.UserUsecase
-	token   auths.TokenService
+	token   auth.TokenService
 	valid   *validator.Validate
 }
 
-func NewUserHandler(app *fiber.App, usecase usecase.UserUsecase, token auths.TokenService, valid *validator.Validate) {
+func NewUserHandler(app *fiber.App, usecase usecase.UserUsecase, token auth.TokenService, valid *validator.Validate) {
 	handler := &HttpUserhandler{
 		usecase: usecase,
 		token:   token,
@@ -28,7 +28,7 @@ func NewUserHandler(app *fiber.App, usecase usecase.UserUsecase, token auths.Tok
 	app.Post("/register", handler.Register)
 	app.Post("/login", handler.Login)
 
-	user := app.Group("/user", auth.Middleware(token))
+	user := app.Group("/user", middleware.Middleware(token))
 	user.Put("/", handler.Updateuser)
 	user.Delete("/", handler.DeleteUser)
 }

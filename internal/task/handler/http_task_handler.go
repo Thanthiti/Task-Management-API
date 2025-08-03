@@ -2,9 +2,13 @@ package handler
 
 import (
 	// "mymodule/internal/task/model"
+	"fmt"
 	"mymodule/internal/task/model"
 	"mymodule/internal/task/usecase"
+	"mymodule/pkg/auth"
 	"mymodule/pkg/logger"
+	"mymodule/pkg/middleware"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
@@ -12,15 +16,17 @@ import (
 
 type HttpTaskhandler struct {
 	usecase usecase.TaskUsecase
+	token  auth.TokenService
 	valid   *validator.Validate
 }
 
-func NewTaskHandler(app *fiber.App, usecase usecase.TaskUsecase, valid *validator.Validate) {
+func NewTaskHandler(app *fiber.App, usecase usecase.TaskUsecase,token auth.TokenService, valid *validator.Validate) {
 	handler := &HttpTaskhandler{
 		usecase: usecase,
+		token: token,
 		valid:   valid,
 	}
-	task := app.Group("/task")
+	task := app.Group("/task",middleware.Middleware(token))
 	task.Post("/", handler.Create)
 
 }
@@ -35,11 +41,12 @@ func (h *HttpTaskhandler) Create(c *fiber.Ctx) error {
 	}
 	// Check panic from c.locals
 	rawUserID := c.Locals("userID")
-	userID, ok := rawUserID.(uint)
-	if !ok {
-		logger.Log.Error("Invalid userID from context")
+	userIDStr := fmt.Sprintf("%v", rawUserID) 
+	userID64, err := strconv.ParseUint(userIDStr, 10, 64)
+	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "unauthorized"})
 	}
+	userID := uint(userID64)
 
 	task := model.ToTask(input, uint(userID))
 	if err := h.usecase.Create(task); err != nil {
