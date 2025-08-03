@@ -27,12 +27,11 @@ type CreateTaskRequest struct {
 }
 
 // UpdateTaskRequest is the request model for updating a task
-type UpdateTaskRequest struct {
-	ID          uint       `json:"id" example:"1" validate:"required"`
-	Title       string     `json:"title,omitempty" example:"Updated Title"`
-	Description string     `json:"description,omitempty" example:"Updated description"`
-	DueDate     *time.Time `json:"due_date,omitempty" example:"2025-08-11T15:00:00Z"`
-	Status      string     `json:"status,omitempty" example:"in_progress" validate:"omitempty,oneof=pending in_progress completed"`
+type UpdateTaskInput struct {
+    Title       *string     `json:"title,omitempty"`
+    Description *string     `json:"description,omitempty"`
+    DueDate     *time.Time  `json:"due_date,omitempty"`
+    Status      *string     `json:"status,omitempty" validate:"omitempty,oneof=pending in_progress completed"`
 }
 
 // TaskResponse is the response model for a task
@@ -46,3 +45,4 @@ type TaskResponse struct {
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 }
+

@@ -1,7 +1,5 @@
 package model
 
-import "github.com/jinzhu/copier"
-
 func ToTask(req CreateTaskRequest, userID uint) Task {
 	return Task{
 		Title:       req.Title,
@@ -25,6 +23,34 @@ func ToTaskResponse(task Task) TaskResponse {
 	}
 }
 
-func ApplyUpdate(task *Task, req UpdateTaskRequest) {
-	_ = copier.CopyWithOption(task, &req, copier.Option{IgnoreEmpty: true, DeepCopy: true})
+func ToTaskFromUpdate(req UpdateTaskInput) *Task {
+	return &Task{
+		Title:       *req.Title,
+		Description: *req.Description,
+		DueDate:     req.DueDate,
+	}
+}
+
+
+func ToTaskResponseList(tasks []Task) []TaskResponse {
+	res := make([]TaskResponse, 0, len(tasks))
+	for _, t := range tasks {
+		res = append(res, ToTaskResponse(t))
+	}
+	return res
+}
+
+func ApplyUpdate(existing *Task, input UpdateTaskInput) {
+    if input.Title != nil {
+        existing.Title = *input.Title
+    }
+    if input.Description != nil {
+        existing.Description = *input.Description
+    }
+    if input.DueDate != nil {
+        existing.DueDate = input.DueDate
+    }
+    if input.Status != nil {
+        existing.Status = *input.Status
+    }
 }

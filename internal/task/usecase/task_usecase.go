@@ -15,7 +15,7 @@ type TaskRepository interface {
 	FindByID(taskID uint) (*model.Task, error)
 	FindByUser(userID uint) (*[]model.Task, error)
 	FindByIDAndUser(taskID, userID uint) (*model.Task, error)
-	Update(task model.Task) error
+	Update(task *model.Task) error
 	Delete(taskID uint) error
 }
 
@@ -24,8 +24,8 @@ type TaskUsecase interface {
 	GetByID(taskID uint) (*model.Task, error)
 	GetByUser(userID uint) (*[]model.Task, error)
 	GetByIDAndUser(taskID, userID uint) (*model.Task, error)
-	UpdateTask(task model.Task) error
-	DeleteTask(taskID uint) error
+	UpdateTask(task *model.UpdateTaskInput, taskID, userID uint) error
+	DeleteTask(taskID, userID uint) error
 }
 
 type TaskusecaseImpl struct {
@@ -104,40 +104,42 @@ func (uc *TaskusecaseImpl) GetByIDAndUser(taskID, userID uint) (*model.Task, err
 	return task, nil
 }
 
-func (uc *TaskusecaseImpl) UpdateTask(task model.Task) error {
-	uc.SetStatusBasedOnDueDate(&task)
+func (uc *TaskusecaseImpl) UpdateTask(input *model.UpdateTaskInput, taskID, userID uint) error {
+    existingTask, err := uc.repo.FindByIDAndUser(taskID, userID)
+    if err != nil {
+        if errors.Is(err, gorm.ErrRecordNotFound) {
+            logger.Log.WithField("taskID", taskID).Warn("Update failed: task not found")
+            return fmt.Errorf("task not found")
+        }
+        logger.Log.WithField("taskID", taskID).Error("Database error when checking task existence")
+        return err
+    }
 
-	_, err := uc.repo.FindByID(task.ID)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			logger.Log.WithField("taskID", task.ID).Warn("Update failed: task not found")
-			return fmt.Errorf("task not found")
-		}
-		logger.Log.WithField("taskID", task.ID).Error("Database error when checking task existence")
-		return err
-	}
+    model.ApplyUpdate(existingTask, *input)
+    uc.SetStatusBasedOnDueDate(existingTask)
 
-	if err := uc.repo.Update(task); err != nil {
-		logger.Log.WithField("taskID", task.ID).Error("Failed to update task")
-		return err
-	}
+    if err := uc.repo.Update(existingTask); err != nil {
+        logger.Log.WithField("taskID", existingTask.ID).Error("Failed to update task")
+        return err
+    }
 
-	logger.Log.WithField("taskID", task.ID).Info("Task updated successfully")
-	return nil
+    logger.Log.WithField("taskID", existingTask.ID).Info("Task updated successfully")
+    return nil
 }
 
-func (uc *TaskusecaseImpl) DeleteTask(taskID uint) error {
-	_, err := uc.repo.FindByID(taskID)
-	
+
+func (uc *TaskusecaseImpl) DeleteTask(taskID, userID uint) error {
+	task, err := uc.repo.FindByIDAndUser(taskID, userID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			logger.Log.Warn("Delete failed: user not found")
-			return fmt.Errorf("user not found")
+			logger.Log.Warn("Delete failed: task not found or unauthorized")
+			return fmt.Errorf("task not found or unauthorized")
 		}
-		logger.Log.Error("DB error when finding user by ID: ", err)
+		logger.Log.Error("DB error when finding task by ID and userID: ", err)
 		return err
 	}
-	if err := uc.repo.Delete(taskID); err != nil {
+
+	if err := uc.repo.Delete(task.ID); err != nil {
 		logger.Log.Error("Delete failed : ", err)
 		return err
 	}

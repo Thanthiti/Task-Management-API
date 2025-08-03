@@ -54,12 +54,12 @@ func (r *GormTaskRepository) FindByIDAndUser(taskID, userID uint) (*model.Task, 
 	return &task, nil
 }
 
-func (r *GormTaskRepository) Update(task model.Task) error {
-	if err := r.db.Save(&task).Error; err != nil {
-		logger.LogTask(task).Error("Failed to update task")
+func (r *GormTaskRepository) Update(task *model.Task) error {
+	if err := r.db.Save(task).Error; err != nil {
+		logger.LogTask(*task).Error("Failed to update task")
 		return err
 	}
-	logger.LogTask(task).Info("Task updated successfully")
+	logger.LogTask(*task).Info("Task updated successfully")
 	return nil
 }
 
