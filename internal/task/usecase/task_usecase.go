@@ -31,7 +31,7 @@ type TaskusecaseImpl struct {
 	repo TaskRepository
 }
 
-func NewtaskUsecase(repo TaskRepository) TaskUsecase {
+func NewTaskUsecase(repo TaskRepository) TaskUsecase {
 	return &TaskusecaseImpl{
 		repo: repo,
 	}

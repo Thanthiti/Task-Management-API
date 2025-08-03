@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // Model for DB(GORM)
 type User struct {
@@ -10,7 +14,7 @@ type User struct {
 	Password  string     `gorm:"not null" validate:"required,main=6"`
 	CreatedAt time.Time  
 	UpdatedAt time.Time  
-	DeletedAt *time.Time `gorm:"index"`  // soft delete
+	DeletedAt gorm.DeletedAt `gorm:"index"`  
 }
 
 //  Request for register model 

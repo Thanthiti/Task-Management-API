@@ -30,7 +30,7 @@ func NewUserHandler(app *fiber.App, usecase usecase.UserUsecase, token auths.Tok
 
 	user := app.Group("/user", auth.Middleware(token))
 	user.Put("/", handler.Updateuser)
-	user.Delete("/:id", handler.DeleteUser)
+	user.Delete("/", handler.DeleteUser)
 }
 
 func (h *HttpUserhandler) Register(c *fiber.Ctx) error {

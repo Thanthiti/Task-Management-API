@@ -72,8 +72,8 @@ func main() {
 	
 	// === Setup Task Module ===
 	taskRepo := taskRepo.NewGormTaskRepository(db)
-	taskUsecase := taskUsecase.NewtaskUsecase(taskRepo)
-	taskHandler.NewUserHandler(app,taskUsecase,validator)
-	// app.Listen(":8080")
+	taskUsecase := taskUsecase.NewTaskUsecase(taskRepo)
+	taskHandler.NewTaskHandler(app,taskUsecase,validator)
+	app.Listen(":8080")
 
 }

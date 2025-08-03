@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // Task is the DB model for a task
 type Task struct {
@@ -12,7 +16,7 @@ type Task struct {
 	UserID      uint       `gorm:"not null" json:"user_id" example:"1"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
-	DeletedAt   *time.Time `gorm:"index" json:"-"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
 // CreateTaskRequest is the request model for creating a task
