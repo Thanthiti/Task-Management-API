@@ -40,8 +40,9 @@ func main() {
 	app := fiber.New()
 	app.Use(cors.New(cors.Config{
 		// AllowOrigins:     "https://your-frontend.com", //  Domain frontend
-		AllowCredentials: false,
-		AllowHeaders:     "Content-Type",
+		AllowOrigins:     "http://127.0.0.1:5500", //  Domain frontend
+		AllowCredentials: true,
+		AllowHeaders: "Content-Type, Authorization",
 	}))
 
 	// Postgres

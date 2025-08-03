@@ -11,8 +11,16 @@ import (
 func Middleware(jwtManager auth.TokenService) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		tokenStr := c.Cookies("jwt")
+
 		if tokenStr == "" {
-			logger.Log.Warn("Missing JWT cookie")
+			authHeader := c.Get("Authorization")
+			if len(authHeader) > 7 && authHeader[:7] == "Bearer " {
+				tokenStr = authHeader[7:]
+			}
+		}
+
+		if tokenStr == "" {
+			logger.Log.Warn("Missing JWT token")
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"error": "unauthorized",
 			})
@@ -35,7 +43,7 @@ func Middleware(jwtManager auth.TokenService) fiber.Handler {
 		}
 
 		userID := uint(claims["userID"].(float64))
-		logger.Log.Info("Authorized user ID from cookie: ", userID)
+		logger.Log.Info("Authorized user ID from token: ", userID)
 
 		c.Locals("userID", userID)
 		return c.Next()
