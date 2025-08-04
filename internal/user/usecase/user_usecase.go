@@ -120,11 +120,16 @@ func (uc *UserusecaseImpl) UpdateUser(user model.User) error {
 		logger.Log.Warn("Update failed: user is nil")
 		return fmt.Errorf("user not found")
 	}
+
 	userWithEmail, err := uc.repo.FindByEmail(user.Email)
 	if err != nil {
-		logger.Log.Error("DB error when checking email uniqueness: ", err)
-		return err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+		} else {
+			logger.Log.Error("DB error when checking email uniqueness: ", err)
+			return err
+		}
 	}
+
 	if userWithEmail != nil && userWithEmail.ID != user.ID {
 		logger.Log.Warn("Update failed: email already registered", user.Email)
 		return fmt.Errorf("email already registered")
@@ -142,9 +147,9 @@ func (uc *UserusecaseImpl) UpdateUser(user model.User) error {
 	return nil
 }
 
+
 func (uc *UserusecaseImpl) DeleteUser(userID uint) error {
 	user, err := uc.repo.FindByID(userID)
-
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			logger.Log.Warn("Delete failed: user not found")
@@ -153,7 +158,6 @@ func (uc *UserusecaseImpl) DeleteUser(userID uint) error {
 		logger.Log.Error("DB error when finding user by ID: ", err)
 		return err
 	}
-
 	if user == nil {
 		logger.Log.Warn("Delete failed: user is nil")
 		return fmt.Errorf("user not found")
@@ -167,3 +171,4 @@ func (uc *UserusecaseImpl) DeleteUser(userID uint) error {
 	logger.Log.Info("User deleted : ", userID)
 	return nil
 }
+

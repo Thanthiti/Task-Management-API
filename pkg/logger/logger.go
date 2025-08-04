@@ -17,6 +17,16 @@ func InitLogger() {
 	// Show which file did the log come from
 	Log.SetLevel(logrus.InfoLevel)
 
+	if os.Getenv("GO_ENV") == "test" {
+		Log.Out = os.Stdout
+		Log.SetFormatter(&logrus.TextFormatter{
+			FullTimestamp:   true,
+			TimestampFormat: time.RFC3339,
+			ForceColors:     true,
+		})
+		return
+	}
+
 	if _, err := os.Stat("logs"); os.IsNotExist(err) {
 		// 0755 = owner can edit other can read
 		if err := os.Mkdir("logs", 0755); err != nil {
