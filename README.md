@@ -36,33 +36,32 @@ A simple RESTful API for task management built with Go, GORM, and PostgreSQL (or
 your-project/
 │
 ├── cmd/
-│ └── server/ # Main entrypoint (main.go)
+│   └── server/               # Main entrypoint (main.go)
 │
 ├── internal/
-│ ├── user/
-│ │ ├── handler/ # HTTP handlers
-│ │ ├── model/ # Data structures
-│ │ ├── repository/ # DB operations
-│ │ └── usecase/ # Business logic
-│ │
-│ └── task/
-│ ├── handler/
-│ ├── model/
-│ ├── repository/
-│ └── usecase/
+│   ├── user/
+│   │   ├── handler/          # HTTP handlers
+│   │   ├── model/            # Data structures
+│   │   ├── repository/       # DB operations
+│   │   └── usecase/          # Business logic
+│   │
+│   └── task/
+│       ├── handler/
+│       ├── model/
+│       ├── repository/
+│       └── usecase/
 │
 ├── pkg/
-│ ├── config/ # DB and environment setup
-│ ├── logger/ # Logrus setup
-│ ├── middleware/ # Fiber middlewares
-│ ├── helper/ # Utilities
-│ └── auth/ # JWT helpers
+│   ├── config/               # DB and environment setup
+│   ├── logger/               # Logrus setup
+│   ├── middleware/           # Fiber middlewares
+│   ├── helper/               # Utilities
+│   └── auth/                 # JWT helpers
 │
-├── .env.example # Sample env file
-├── Dockerfile # App Dockerfile
-├── docker-compose.yml # Compose file for app + DB
+├── .env.example              # Sample env file
+├── Dockerfile                # App Dockerfile
+├── docker-compose.yml        # Compose file for app + DB
 ├── go.mod
-└── README.md 
 
 ---
 
