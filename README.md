@@ -30,7 +30,7 @@ A simple RESTful API for task management built with Go, GORM, and PostgreSQL (or
 - **Testify** for unit testing
 
 ---
-
+```
 ## Project Structure (Clean Architecture)
 
 your-project/
@@ -64,7 +64,7 @@ your-project/
 ├── go.mod
 
 ---
-
+```
 ## Setup Instructions
 
 ### 1.Clone the repo
