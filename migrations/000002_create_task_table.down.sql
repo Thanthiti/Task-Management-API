@@ -1,1 +1,1 @@
-DROP TABLE task;
+DROP TABLE tasks;
