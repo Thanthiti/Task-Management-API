@@ -30,9 +30,9 @@ A simple RESTful API for task management built with Go, GORM, and PostgreSQL (or
 - **Testify** for unit testing
 
 ---
-```
-## Project Structure (Clean Architecture)
 
+## Project Structure (Clean Architecture)
+```
 your-project/
 │
 ├── cmd/
@@ -63,8 +63,8 @@ your-project/
 ├── docker-compose.yml        # Compose file for app + DB
 ├── go.mod
 
----
 ```
+---
 ## Setup Instructions
 
 ### 1.Clone the repo
