@@ -4,29 +4,29 @@ import (
 	"os"
 	"time"
 
-	"mymodule/config"
+	// "mymodule/config"
 	"mymodule/pkg/auth"
 	loger "mymodule/pkg/logger"
 	"mymodule/pkg/validator"
 
 	// User module
 	userHandler "mymodule/internal/user/handler"
-	// userModel "mymodule/internal/user/model"
+	userModel "mymodule/internal/user/model"
 	userRepo "mymodule/internal/user/repository"
 	userUsecase "mymodule/internal/user/usecase"
 
 	// Task module
 	taskHandler "mymodule/internal/task/handler"
-	// taskModel "mymodule/internal/task/model"
+	taskModel "mymodule/internal/task/model"
 	taskRepo "mymodule/internal/task/repository"
 	taskUsecase "mymodule/internal/task/usecase"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
-	// "gorm.io/driver/sqlite"
-	// "gorm.io/gorm"
-	// "gorm.io/gorm/logger"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func main() {
@@ -45,18 +45,18 @@ func main() {
 	}))
 
 	// Postgres
-	db := config.InitDB()
+	// db := config.InitDB()
 
-	// db, err := gorm.Open(sqlite.Open("test_task_management.db"), &gorm.Config{
-	// 	Logger: logger.Default.LogMode(logger.Silent),
-	// })
-	// if err != nil {
-	// 	loger.Log.Error("Failed to connect database : ", err)
-	// }
+	db, err := gorm.Open(sqlite.Open("test_task_management.db"), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+	if err != nil {
+		loger.Log.Error("Failed to connect database : ", err)
+	}
 
-	// if err := db.AutoMigrate(&userModel.User{},&taskModel.Task{}); err != nil {
-	// 	loger.Log.Error("Failed to connect database : ", err)
-	// }
+	if err := db.AutoMigrate(&userModel.User{},&taskModel.Task{}); err != nil {
+		loger.Log.Error("Failed to connect database : ", err)
+	}
 
 	jwtKey := os.Getenv("JWT_SECRET")
 	// === Initialize Core Services ===
