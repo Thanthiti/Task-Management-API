@@ -12,7 +12,7 @@ A simple RESTful API for task management built with Go, GORM, and PostgreSQL (or
 - PostgreSQL with GORM
 - Environment-based config loading
 - Dockerized for easy development & deployment
-- Unit testing with testify + SQLite (for speed)
+- Unit testing with testify + SQLite 
 
 ---
 
@@ -37,6 +37,9 @@ your-project/
 │
 ├── cmd/
 │   └── server/               # Main entrypoint (main.go)
+│   └── migrate/              # Run to migrate DB
+│
+│├── config/                  #DB and environment setup
 │
 ├── internal/
 │   ├── user/
@@ -51,12 +54,16 @@ your-project/
 │       ├── repository/
 │       └── usecase/
 │
+├── logs/                     #Application Log File
+│
+├── migrations/               #SQL Schema Folder
+│
 ├── pkg/
-│   ├── config/               # DB and environment setup
 │   ├── logger/               # Logrus setup
 │   ├── middleware/           # Fiber middlewares
 │   ├── helper/               # Utilities
-│   └── auth/                 # JWT helpers
+│   ├── auth/                 # JWT helpers
+│   └── validator/            # Request Validation
 │
 ├── .env.example              # Sample env file
 ├── Dockerfile                # App Dockerfile
