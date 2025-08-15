@@ -77,7 +77,7 @@ your-project/
 ### 1.Clone the repo
 
 ```bash
-git clone https://github.com/yourusername/task-api.git
+git clone https://github.com/Thanthiti/task-api.git
 cd task-api
 ```
 
