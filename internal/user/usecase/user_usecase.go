@@ -21,6 +21,7 @@ type UserRepository interface {
 type UserUsecase interface {
 	Register(user model.User) error
 	Login(email, password string) (string, error)
+	Profile(userID uint) (model.User, error)
 	UpdateUser(user model.User) error
 	DeleteUser(userID uint) error
 }
@@ -105,6 +106,23 @@ func (uc *UserusecaseImpl) Login(email, password string) (string, error) {
 	logger.Log.Info("User logged in : ", email)
 	return token, nil
 }
+
+func (uc *UserusecaseImpl) Profile(userID uint) (model.User, error) {
+	user, err := uc.repo.FindByID(userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			logger.Log.Warn("Profile failed: user not found")
+			return model.User{}, fmt.Errorf("user not found")
+		}
+		logger.Log.Error("DB error when finding user by ID: ", err)
+		return model.User{}, err
+	}
+	if user == nil {
+		logger.Log.Warn("Profile failed: user is nil")
+		return model.User{}, fmt.Errorf("user not found")
+	}
+	return *user, nil
+	}
 
 func (uc *UserusecaseImpl) UpdateUser(user model.User) error {
 	exitUser, err := uc.repo.FindByID(user.ID)

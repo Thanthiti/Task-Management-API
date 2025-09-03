@@ -29,6 +29,7 @@ func NewUserHandler(app *fiber.App, usecase usecase.UserUsecase, token auth.Toke
 	app.Post("/login", handler.Login)
 
 	user := app.Group("/user", middleware.Middleware(token))
+	user.Get("/profile", handler.Profile)
 	user.Put("/", handler.Updateuser)
 	user.Delete("/", handler.DeleteUser)
 }
@@ -75,6 +76,15 @@ func (h *HttpUserhandler) Login(c *fiber.Ctx) error {
 	})
 
 	return c.JSON(fiber.Map{"token": token})
+}
+
+func (h *HttpUserhandler) Profile(c *fiber.Ctx) error {
+	userID := c.Locals("userID").(uint)
+	user, err := h.usecase.Profile(userID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.JSON(user)
 }
 
 func (h *HttpUserhandler) Updateuser(c *fiber.Ctx) error {
