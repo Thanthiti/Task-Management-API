@@ -4,6 +4,8 @@ import (
 	"mymodule/internal/task/model"
 	"mymodule/internal/task/usecase"
 	"mymodule/pkg/logger"
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -70,4 +72,12 @@ func (r *GormTaskRepository) Delete(taskID uint) error {
 	}
 	logger.Log.WithField("taskID", taskID).Info("Task deleted successfully")
 	return nil
+}
+
+func (r *GormTaskRepository) UpdateOverdueTasks(userID uint) error {
+	now := time.Now().UTC()
+	return r.db.Model(&model.Task{}).
+         Where("user_id = ? AND due_date <= ? AND status NOT IN ?", userID, now, []string{"completed","overdue"}).
+		Update("status", "overdue").Error
+
 }

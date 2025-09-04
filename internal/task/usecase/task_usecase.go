@@ -17,6 +17,7 @@ type TaskRepository interface {
 	FindByIDAndUser(taskID, userID uint) (*model.Task, error)
 	Update(task *model.Task) error
 	Delete(taskID uint) error
+	UpdateOverdueTasks(userID uint) error
 }
 
 type TaskUsecase interface {
@@ -49,6 +50,11 @@ func (uc *TaskusecaseImpl) SetStatusBasedOnDueDate(task *model.Task) {
 func (uc *TaskusecaseImpl) Create(task model.Task) error {
 	uc.SetStatusBasedOnDueDate(&task)
 
+	// Valid duedate
+	if task.DueDate != nil && task.DueDate.Before(time.Now()) {
+		return errors.New("invalid due date")
+	}
+
 	if err := uc.repo.Save(task); err != nil {
 		logger.Log.WithField("userID", task.UserID).Error("Failed to create task")
 		return err
@@ -76,6 +82,12 @@ func (uc *TaskusecaseImpl) GetByID(taskID uint) (*model.Task, error) {
 }
 
 func (uc *TaskusecaseImpl) GetByUser(userID uint) (*[]model.Task, error) {
+
+	if err := uc.repo.UpdateOverdueTasks(userID); err != nil {
+		logger.Log.WithField("userID", userID).Error("Failed to update overdue tasks")
+		return nil, err
+	}
+
 	tasks, err := uc.repo.FindByUser(userID)
 
 	if err != nil {

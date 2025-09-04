@@ -46,6 +46,11 @@ func (m *MockTaskRepository) Delete(taskID uint) error {
 	args := m.Called(taskID)
 	return args.Error(0)
 }
+
+func (m *MockTaskRepository) UpdateOverdueTasks(userID uint) error {
+	args := m.Called(userID)
+	return args.Error(0)
+}
 func Testlog(m *testing.M) {
 	logger.InitLogger()
 	os.Exit(m.Run())
