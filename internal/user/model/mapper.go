@@ -17,3 +17,10 @@ func ToUserResponse(u User) UserResponse {
 	}
 }
 
+func ToUserProfileResponse(u User) UserProfileResponse {
+	return UserProfileResponse{
+		Name:  u.Name,
+		Email: u.Email,
+	}
+}
+

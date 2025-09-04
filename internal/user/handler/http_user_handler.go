@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"mymodule/internal/user/model"
 	"mymodule/internal/user/usecase"
 	"mymodule/pkg/auth"
@@ -84,7 +83,8 @@ func (h *HttpUserhandler) Profile(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
-	return c.JSON(user)
+	res := model.ToUserProfileResponse(user)
+	return c.JSON(res)
 }
 
 func (h *HttpUserhandler) Updateuser(c *fiber.Ctx) error {
@@ -99,14 +99,11 @@ func (h *HttpUserhandler) Updateuser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	input.ID = userID
-
 	user := model.User{
-		ID:    input.ID,
+		ID:    userID,
 		Name:  input.Name,
 		Email: input.Email,
 	}
-	fmt.Println(user)
 
 	if err := h.usecase.UpdateUser(user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
