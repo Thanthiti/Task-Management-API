@@ -36,6 +36,7 @@ type UpdateTaskInput struct {
 
 // TaskResponse is the response model for a task
 type TaskResponse struct {
+	ID          uint       `json:"id" example:"1"`
 	Title       string     `json:"title" example:"Write blog post"`
 	Status      string     `json:"status" example:"pending"`
 }

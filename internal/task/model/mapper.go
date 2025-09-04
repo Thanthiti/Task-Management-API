@@ -12,6 +12,7 @@ func ToTask(req CreateTaskRequest, userID uint) Task {
 
 func ToTaskResponse(task Task) TaskResponse {
 	return TaskResponse{
+		ID:          task.ID,
 		Title:       task.Title,
 		Status:      task.Status,
 	}
