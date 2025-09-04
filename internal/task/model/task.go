@@ -36,13 +36,13 @@ type UpdateTaskInput struct {
 
 // TaskResponse is the response model for a task
 type TaskResponse struct {
-	ID          uint       `json:"id" example:"1"`
+	Title       string     `json:"title" example:"Write blog post"`
+	Status      string     `json:"status" example:"pending"`
+}
+type DetailTaskResponse struct {
 	Title       string     `json:"title" example:"Write blog post"`
 	Description string     `json:"description" example:"Write about Clean Architecture"`
 	DueDate     *time.Time `json:"due_date,omitempty" example:"2025-08-10T15:00:00Z"`
 	Status      string     `json:"status" example:"pending"`
-	UserID      uint       `json:"user_id" example:"1"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
 }
 

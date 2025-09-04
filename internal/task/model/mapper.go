@@ -12,14 +12,17 @@ func ToTask(req CreateTaskRequest, userID uint) Task {
 
 func ToTaskResponse(task Task) TaskResponse {
 	return TaskResponse{
-		ID:          task.ID,
+		Title:       task.Title,
+		Status:      task.Status,
+	}
+}
+
+func ToDetailTaskResponse(task Task) DetailTaskResponse {
+	return DetailTaskResponse{
 		Title:       task.Title,
 		Description: task.Description,
 		DueDate:     task.DueDate,
 		Status:      task.Status,
-		UserID:      task.UserID,
-		CreatedAt:   task.CreatedAt,
-		UpdatedAt:   task.UpdatedAt,
 	}
 }
 

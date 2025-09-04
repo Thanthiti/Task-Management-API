@@ -102,9 +102,9 @@ func (h *HttpTaskhandler) GetTaskByIDAndUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "task not found or unauthorized"})
 	}
-	var resp model.TaskResponse
+	var resp model.DetailTaskResponse
 	if task != nil {
-		resp = model.ToTaskResponse(*task)
+		resp = model.ToDetailTaskResponse(*task)
 	}
 
 	return c.JSON(resp)
