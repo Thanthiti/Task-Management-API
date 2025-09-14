@@ -77,8 +77,8 @@ your-project/
 ### 1.Clone the repo
 
 ```bash
-git clone https://github.com/Thanthiti/task-api.git
-cd task-api
+git clone https://github.com/Thanthiti/Task-Management-API.git
+cd Task-Management-API
 ```
 
 ### 2.Setup Environment Variables 
@@ -86,6 +86,7 @@ cd task-api
 ```bash
 cp .env.example .env
 ```
+```bash
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
@@ -93,7 +94,7 @@ DB_PASSWORD=yourpassword
 DB_NAME=taskdb
 DB_SSL=disable
 JWT_SECRET=your_jwt_secret
-
+```
 ### 3. Start the App with Docker Compose
 ```bash
 docker-compose up --build
