@@ -82,10 +82,6 @@ cd Task-Management-API
 ```
 
 ### 2.Setup Environment Variables 
-
-```bash
-cp .env.example .env
-```
 ```bash
 DB_HOST=localhost
 DB_PORT=5432
